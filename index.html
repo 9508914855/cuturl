@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>URL Shortener</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        p#shortUrl {
+            margin-top: 10px;
+            font-size: 14px;
+            word-wrap: break-word;
+        }
+
+        p#shortUrl a {
+            color: #4CAF50;
+        }
+
+        p#error {
+            color: #ff0000;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>URL Shortener</h1>
+        <input type="text" id="longUrlInput" placeholder="Enter long URL" required>
+        <button onclick="shortenUrl()">Shorten</button>
+        <p id="shortUrl"></p>
+        <p id="error"></p>
+    </div>
+
+    <script>
+        function shortenUrl() {
+            var longUrl = document.getElementById("longUrlInput").value;
+
+            // Make a POST request to the API endpoint
+            $.ajax({
+                url: "https://bitelink.000webhostapp.com/api.php",
+                type: "POST",
+                dataType: "json",
+                data: JSON.stringify({ longUrl: longUrl }),
+                contentType: "application/json",
+                success: function(response) {
+                    if (response.status === "success") {
+                        document.getElementById("shortUrl").innerHTML = "Short URL: <a href='" + response.shortUrl + "'>" + response.shortUrl + "</a>";
+                        document.getElementById("error").innerHTML = "";
+                    } else {
+                        document.getElementById("error").innerHTML = "Error: " + response.message;
+                        document.getElementById("shortUrl").innerHTML = "";
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    document.getElementById("error").innerHTML = "Error: " + textStatus;
+                    document.getElementById("shortUrl").innerHTML = "";
+                }
+            });
+        }
+    </script>
+</body>
+</html>
